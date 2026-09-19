@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>AWS Three Tier Application</title>
+
+    <style>
+
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .container {
+            background: white;
+            max-width: 600px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+        }
+
+        input {
+            padding: 10px;
+            width: 60%;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #ff9900;
+            border: none;
+            cursor: pointer;
+        }
+
+        li {
+            list-style: none;
+            margin: 10px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>AWS Three Tier Application</h1>
+
+<p>Frontend → Backend → RDS MySQL</p>
+
+<input
+    id="name"
+    placeholder="Enter your name"
+/>
+
+<button onclick="addUser()">
+    Add User
+</button>
+
+<h2>Users</h2>
+
+<ul id="users"></ul>
+
+</div>
+
+
+<script>
+
+async function loadUsers() {
+
+    const response =
+        await fetch("/api/users");
+
+    const users =
+        await response.json();
+
+    const list =
+        document.getElementById("users");
+
+    list.innerHTML = "";
+
+    users.forEach(user => {
+
+        const item =
+            document.createElement("li");
+
+        item.innerText =
+            user.id + " - " + user.name;
+
+        list.appendChild(item);
+
+    });
+
+}
+
+
+async function addUser() {
+
+    const name =
+        document.getElementById("name").value;
+
+    if (!name) {
+        alert("Please enter a name");
+        return;
+    }
+
+    await fetch("/api/users", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            name: name
+        })
+
+    });
+
+    document.getElementById("name").value = "";
+
+    loadUsers();
+}
+
+
+loadUsers();
+
+</script>
+
+</body>
+</html>

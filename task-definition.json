@@ -1,0 +1,106 @@
+{
+  "family": "three-tier-app",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": [
+    "FARGATE"
+  ],
+  "cpu": "512",
+  "memory": "1024",
+
+  "executionRoleArn": "arn:aws:iam::565725315365:role/ecsTaskExecutionRole",
+
+  "containerDefinitions": [
+
+    {
+      "name": "frontend",
+
+      "image": "565725315365.dkr.ecr.us-east-1.amazonaws.com/three-tier-frontend:latest",
+
+      "essential": true,
+
+      "portMappings": [
+        {
+          "containerPort": 80,
+          "protocol": "tcp"
+        }
+      ],
+
+      "logConfiguration": {
+
+        "logDriver": "awslogs",
+
+        "options": {
+
+          "awslogs-group": "/ecs/three-tier-frontend",
+
+          "awslogs-region": "us-east-1",
+
+          "awslogs-stream-prefix": "ecs"
+
+        }
+
+      }
+
+    },
+
+
+    {
+      "name": "backend",
+
+      "image": "565725315365.dkr.ecr.us-east-1.amazonaws.com/three-tier-backend:latest",
+
+      "essential": true,
+
+      "environment": [
+
+        {
+          "name": "DB_HOST",
+          "value": "three-tier-db.c4nqqaiygeon.us-east-1.rds.amazonaws.com"
+        },
+
+        {
+          "name": "DB_USER",
+          "value": "admin"
+        },
+
+        {
+          "name": "DB_PASSWORD",
+          "value": "Database7899"
+        },
+
+        {
+          "name": "DB_NAME",
+          "value": "appdb"
+        }
+
+      ],
+
+      "portMappings": [
+
+        {
+          "containerPort": 5000,
+          "protocol": "tcp"
+        }
+
+      ],
+
+      "logConfiguration": {
+
+        "logDriver": "awslogs",
+
+        "options": {
+
+          "awslogs-group": "/ecs/three-tier-backend",
+
+          "awslogs-region": "us-east-1",
+
+          "awslogs-stream-prefix": "ecs"
+
+        }
+
+      }
+
+    }
+
+  ]
+}
